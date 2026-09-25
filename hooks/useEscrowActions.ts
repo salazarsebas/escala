@@ -60,9 +60,20 @@ export function useEscrowActions() {
     [requireStellarWallet, sendTransaction]
   );
 
-  /** Ensure the connected wallet can hold/receive USDC before it signs a money-moving step. */
-  const ensureUsdcTrustline = useCallback(async () => {
+  /**
+   * Cavos wallets are lazily deployed: the account doesn't exist on-chain
+   * until its first `execute()`. Both addTrustline and anything Trustless
+   * Work builds (which needs a real sequence number) require the account to
+   * exist first, so every action routes through this before touching USDC
+   * or signing an escrow transaction.
+   */
+  const ensureDeployedAndUsdcTrustline = useCallback(async () => {
     const stellarWallet = requireStellarWallet();
+    if (!stellarWallet.isDeployed) {
+      // Sponsored self-payment of 1 stroop: the smallest possible transfer,
+      // used purely to trigger lazy account creation (0 XLM cost to the user).
+      await stellarWallet.execute(BigInt(1), stellarWallet.address);
+    }
     const balance = await stellarWallet.tokenBalance(USDC_ASSET);
     if (balance === "0") {
       // tokenBalance() also returns "0" when the trustline doesn't exist yet;
@@ -80,7 +91,7 @@ export function useEscrowActions() {
       businessAddress,
       promoterAddress,
     }: DeployCampaignInput) => {
-      await ensureUsdcTrustline();
+      await ensureDeployedAndUsdcTrustline();
 
       const payload: DeploySingleReleaseEscrowPayload = {
         signer: businessAddress,
@@ -120,13 +131,13 @@ export function useEscrowActions() {
 
       return deployResult.contractId;
     },
-    [deployEscrow, ensureUsdcTrustline, fundEscrow, signAndSend]
+    [deployEscrow, ensureDeployedAndUsdcTrustline, fundEscrow, signAndSend]
   );
 
   /** Step 2: the promoter marks a real-world conversion as delivered. */
   const submitConversion = useCallback(
     async (contractId: string, promoterAddress: string, evidence: string) => {
-      await ensureUsdcTrustline();
+      await ensureDeployedAndUsdcTrustline();
       const result = await changeMilestoneStatus(
         {
           contractId,
@@ -143,7 +154,7 @@ export function useEscrowActions() {
       );
       return signAndSend(result.unsignedXdr);
     },
-    [changeMilestoneStatus, ensureUsdcTrustline, signAndSend]
+    [changeMilestoneStatus, ensureDeployedAndUsdcTrustline, signAndSend]
   );
 
   /** Step 3: the business approves the milestone, then releases USDC to the promoter. */
@@ -168,5 +179,5 @@ export function useEscrowActions() {
     [approveMilestones, releaseFunds, signAndSend]
   );
 
-  return { createCampaign, submitConversion, approveAndRelease, ensureUsdcTrustline };
+  return { createCampaign, submitConversion, approveAndRelease, ensureDeployedAndUsdcTrustline };
 }
