@@ -39,7 +39,7 @@ conditional on approval. That's the product.
 | Piece | Choice | Why |
 |---|---|---|
 | Wallets | [Cavos](https://cavos.xyz) social login | Businesses and promoters sign in with Google, no seed phrases. Cavos creates a self-custodial Stellar account per user and exposes `signXdr()`, so it can sign transactions built by any third-party API, not just its own SDK calls. |
-| Escrow | [Trustless Work](https://trustlesswork.com) | Instead of writing and auditing a custom Soroban escrow contract in a one-day hackathon, ESCALA integrates Trustless Work's audited, already-deployed single-release escrow contracts via their REST/React SDK. Every campaign budget is a real on-chain escrow. |
+| Escrow | [Trustless Work](https://trustlesswork.com) `@trustless-work/escrow@3` | Instead of writing and auditing a custom Soroban escrow contract in a one-day hackathon, ESCALA integrates Trustless Work's audited, already-deployed single-release escrow contracts via their REST/React SDK. Every campaign budget is a real on-chain escrow. |
 | Asset | USDC (Stellar Asset Contract) | Rewards and budgets are denominated in USDC so the numbers on screen are real dollars, not a points system. |
 | App | Next.js 16 (App Router) + TypeScript + Tailwind | Fast to ship, deploys to Vercel in one command. |
 
@@ -49,7 +49,7 @@ conditional on approval. That's the product.
 Business creates campaign
         |
         v
-useDeployEscrow()  ->  unsigned XDR  ->  wallet.signXdr()  ->  useSendTransaction()
+useInitializeEscrow()  ->  unsigned XDR  ->  wallet.signXdr()  ->  useSendTransaction()
         |  (roles: approver=business, receiver=promoter, releaseSigner=business)
         v
 useFundEscrow()    ->  budget locked in USDC on-chain
@@ -61,7 +61,7 @@ Promoter shares /c/[contractId] (QR + link) with a customer
 Promoter marks the conversion  ->  useChangeMilestoneStatus() -> "submitted"
         |
         v
-Business reviews and approves  ->  useApproveMilestones() -> useReleaseFunds()
+Business reviews and approves  ->  useApproveMilestone() -> useReleaseFunds()
         |
         v
 USDC lands in the promoter's Cavos wallet, verifiable on Stellar Expert
@@ -101,9 +101,9 @@ You need two sets of credentials, both free:
 
 1. **Cavos App ID**: create an app at the [Cavos console](https://cavos.xyz),
    enable Stellar, copy the App ID into `NEXT_PUBLIC_CAVOS_APP_ID`.
-2. **Trustless Work API key**: request a testnet key from their
-   [developer resources](https://docs.trustlesswork.com/trustless-work/introduction/developer-resources/request-api-key),
-   copy it into `NEXT_PUBLIC_TW_API_KEY`.
+2. **Trustless Work API key**: generate a testnet key from their
+   [dashboard](https://dapp.trustlesswork.com/settings?tab=api-keys) (Testnet
+   tab, `ESCROW_MANAGER` role), copy it into `NEXT_PUBLIC_TW_API_KEY`.
 
 Everything else in `.env.example` has a sensible testnet default (network,
 USDC issuer).
