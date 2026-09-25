@@ -25,7 +25,9 @@ export function Providers({ children }: { children: ReactNode }) {
             defaultChain: "stellar",
             network: STELLAR_NETWORK === "mainnet" ? "mainnet" : "testnet",
             appSalt: "escala-hackathon",
-            socialRecovery: true,
+            // Social recovery needs to be explicitly enabled per app/environment
+            // in the Cavos dashboard (enclave attestation setup). Not needed for
+            // the hackathon MVP, so we leave it off instead of depending on that.
           }}
           modal={{
             appName: "ESCALA",
