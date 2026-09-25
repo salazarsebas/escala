@@ -1,22 +1,30 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCavos } from "@cavos/kit/react";
-import { ConnectButton } from "@/components/ConnectButton";
 import { CampaignForm } from "@/components/CampaignForm";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
+// Cavos's OAuth redirect target is the exact page the login started from, so
+// every page that can trigger `login()` needs its own callback URL
+// whitelisted in the Cavos console. Keeping /dashboard as the ONLY page that
+// renders ConnectButton means the console only ever needs one entry.
 export default function NewCampaignPage() {
+  const router = useRouter();
   const { isAuthenticated, address } = useCavos();
+
+  useEffect(() => {
+    if (!isAuthenticated || !address) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, address, router]);
 
   if (!isAuthenticated || !address) {
     return (
-      <div className="mx-auto flex min-h-[70vh] max-w-md flex-col items-center justify-center gap-6 px-6 text-center">
-        <h1 className="text-2xl font-bold text-neutral-900">Conecta tu wallet</h1>
-        <p className="text-sm text-neutral-500">
-          Necesitas iniciar sesion para crear una campana y depositar el presupuesto.
-        </p>
-        <ConnectButton />
+      <div className="flex min-h-[70vh] items-center justify-center text-neutral-400">
+        <Loader2 className="animate-spin" />
       </div>
     );
   }
