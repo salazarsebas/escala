@@ -3,7 +3,7 @@
 import { use } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { useGetEscrow } from "@trustless-work/escrow";
+import { useGetEscrowFromIndexerByContractIds } from "@trustless-work/escrow";
 import { deriveTone, StatusBadge } from "@/components/StatusBadge";
 import { QrShare } from "@/components/QrShare";
 import { explorerContractUrl, shortAddress } from "@/lib/stellar";
@@ -15,12 +15,15 @@ export default function PublicCampaignPage({
   params: Promise<{ contractId: string }>;
 }) {
   const { contractId } = use(params);
-  const { getEscrow } = useGetEscrow();
+  const { getEscrowByContractIds } = useGetEscrowFromIndexerByContractIds();
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["escrow", contractId],
-    queryFn: () => getEscrow(contractId),
+    queryFn: async () => {
+      const results = await getEscrowByContractIds({ contractIds: [contractId] });
+      return results[0];
+    },
   });
 
   if (isLoading) {
@@ -42,11 +45,8 @@ export default function PublicCampaignPage({
     );
   }
 
-  const { escrow } = data;
-  const { snapshot } = escrow;
-  const amount = "amount" in snapshot ? snapshot.amount : null;
-  const milestone = snapshot.milestones[0];
-  const tone = deriveTone(escrow.status, milestone?.status);
+  const milestone = data.milestones[0];
+  const tone = deriveTone(data.flags, milestone?.status);
 
   return (
     <div className="mx-auto max-w-xl px-6 py-14">
@@ -55,17 +55,15 @@ export default function PublicCampaignPage({
         Campana ESCALA en Stellar
       </div>
 
-      <h1 className="text-3xl font-bold text-neutral-900">{snapshot.title}</h1>
-      <p className="mt-3 text-neutral-600">{snapshot.description}</p>
+      <h1 className="text-3xl font-bold text-neutral-900">{data.title}</h1>
+      <p className="mt-3 text-neutral-600">{data.description}</p>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <StatusBadge tone={tone} />
-        {amount !== null && (
-          <span className="text-sm text-neutral-500">
-            Recompensa por conversion verificada:{" "}
-            <strong className="text-neutral-900">{amount} USDC</strong>
-          </span>
-        )}
+        <span className="text-sm text-neutral-500">
+          Recompensa por conversion verificada:{" "}
+          <strong className="text-neutral-900">{data.amount} USDC</strong>
+        </span>
       </div>
 
       <div className="mt-10 grid gap-8 sm:grid-cols-2 sm:items-start">

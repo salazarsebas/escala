@@ -3,26 +3,26 @@
 import Link from "next/link";
 import { useCavos } from "@cavos/kit/react";
 import { useQuery } from "@tanstack/react-query";
-import { useListEscrows } from "@trustless-work/escrow";
+import { useGetEscrowsFromIndexerByRole } from "@trustless-work/escrow";
 import { ConnectButton } from "@/components/ConnectButton";
 import { CampaignCard } from "@/components/CampaignCard";
 import { Plus } from "lucide-react";
 
 export default function DashboardPage() {
   const { isAuthenticated, address } = useCavos();
-  const { listEscrows } = useListEscrows();
+  const { getEscrowsByRole } = useGetEscrowsFromIndexerByRole();
 
   const asBusiness = useQuery({
     queryKey: ["escrows", "approver", address],
     queryFn: () =>
-      listEscrows({ participant: address!, role: "approver", sort: "createdAt", order: "desc" }),
+      getEscrowsByRole({ role: "approver", roleAddress: address!, orderBy: "createdAt", orderDirection: "desc" }),
     enabled: Boolean(address),
   });
 
   const asPromoter = useQuery({
     queryKey: ["escrows", "receiver", address],
     queryFn: () =>
-      listEscrows({ participant: address!, role: "receiver", sort: "createdAt", order: "desc" }),
+      getEscrowsByRole({ role: "receiver", roleAddress: address!, orderBy: "createdAt", orderDirection: "desc" }),
     enabled: Boolean(address),
   });
 
@@ -62,15 +62,15 @@ export default function DashboardPage() {
         </div>
 
         {asBusiness.isLoading && <p className="text-sm text-neutral-400">Cargando...</p>}
-        {asBusiness.data && asBusiness.data.data.length === 0 && (
+        {asBusiness.data && asBusiness.data.length === 0 && (
           <p className="rounded-xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-400">
             Aun no creaste ninguna campana. Crea la primera y deposita el presupuesto en USDC.
           </p>
         )}
         <div className="space-y-4">
-          {asBusiness.data?.data.map((campaign) => (
+          {asBusiness.data?.map((campaign) => (
             <CampaignCard
-              key={campaign.contractId}
+              key={campaign.contractId || campaign.engagementId}
               campaign={campaign}
               viewerRole="approver"
               onChanged={() => asBusiness.refetch()}
@@ -87,15 +87,15 @@ export default function DashboardPage() {
         </p>
 
         {asPromoter.isLoading && <p className="text-sm text-neutral-400">Cargando...</p>}
-        {asPromoter.data && asPromoter.data.data.length === 0 && (
+        {asPromoter.data && asPromoter.data.length === 0 && (
           <p className="rounded-xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-400">
             Todavia ningun negocio te agrego como promotor. Comparte tu direccion de arriba.
           </p>
         )}
         <div className="space-y-4">
-          {asPromoter.data?.data.map((campaign) => (
+          {asPromoter.data?.map((campaign) => (
             <CampaignCard
-              key={campaign.contractId}
+              key={campaign.contractId || campaign.engagementId}
               campaign={campaign}
               viewerRole="receiver"
               onChanged={() => asPromoter.refetch()}

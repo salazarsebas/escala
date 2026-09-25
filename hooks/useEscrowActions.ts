@@ -2,16 +2,18 @@
 
 import { useCallback } from "react";
 import {
-  useApproveMilestones,
+  useApproveMilestone,
   useChangeMilestoneStatus,
-  useDeployEscrow,
   useFundEscrow,
+  useInitializeEscrow,
   useReleaseFunds,
   useSendTransaction,
-  type DeploySingleReleaseEscrowPayload,
+  type EscrowRequestResponse,
+  type InitializeSingleReleaseEscrowPayload,
+  type InitializeSingleReleaseEscrowResponse,
 } from "@trustless-work/escrow";
 import { useCavos } from "@cavos/kit/react";
-import { USDC_ASSET, usdcContractId } from "@/lib/stellar";
+import { USDC_ASSET } from "@/lib/stellar";
 
 // ESCALA's on-chain unit of work: one campaign == one Trustless Work
 // single-release escrow with exactly one milestone ("a verified
@@ -20,7 +22,7 @@ import { USDC_ASSET, usdcContractId } from "@/lib/stellar";
 // This mirrors the MVP scope in the project brief: one campaign, one
 // promoter, one conversion cycle, fully verifiable on Stellar testnet.
 
-export const CONVERSION_MILESTONE_INDEX = 0;
+export const CONVERSION_MILESTONE_INDEX = "0";
 
 type DeployCampaignInput = {
   title: string;
@@ -37,10 +39,10 @@ type DeployCampaignInput = {
  */
 export function useEscrowActions() {
   const { wallet } = useCavos();
-  const { deployEscrow } = useDeployEscrow();
+  const { deployEscrow } = useInitializeEscrow();
   const { fundEscrow } = useFundEscrow();
   const { changeMilestoneStatus } = useChangeMilestoneStatus();
-  const { approveMilestones } = useApproveMilestones();
+  const { approveMilestone } = useApproveMilestone();
   const { releaseFunds } = useReleaseFunds();
   const { sendTransaction } = useSendTransaction();
 
@@ -50,6 +52,13 @@ export function useEscrowActions() {
     }
     return wallet;
   }, [wallet]);
+
+  const requireUnsignedXdr = (result: EscrowRequestResponse) => {
+    if (!result.unsignedTransaction) {
+      throw new Error("Trustless Work no devolvio una transaccion para firmar.");
+    }
+    return result.unsignedTransaction;
+  };
 
   const signAndSend = useCallback(
     async (unsignedXdr: string) => {
@@ -93,7 +102,7 @@ export function useEscrowActions() {
     }: DeployCampaignInput) => {
       await ensureDeployedAndUsdcTrustline();
 
-      const payload: DeploySingleReleaseEscrowPayload = {
+      const payload: InitializeSingleReleaseEscrowPayload = {
         signer: businessAddress,
         engagementId: `escala-${Date.now().toString(36)}`,
         title,
@@ -101,35 +110,30 @@ export function useEscrowActions() {
         amount: rewardAmount,
         platformFee: 0,
         roles: {
-          approvers: [businessAddress],
-          serviceProviders: [promoterAddress],
-          platform: businessAddress,
-          releaseSigners: [businessAddress],
-          disputeResolvers: [businessAddress],
+          approver: businessAddress,
+          serviceProvider: promoterAddress,
+          platformAddress: businessAddress,
+          releaseSigner: businessAddress,
+          disputeResolver: businessAddress,
           receiver: promoterAddress,
-          admin: businessAddress,
         },
-        milestones: [
-          {
-            description: "Conversion de cliente verificada",
-            approvalsTarget: 1,
-          },
-        ],
-        trustline: { contractId: await usdcContractId(), symbol: USDC_ASSET.code },
+        milestones: [{ description: "Conversion de cliente verificada" }],
+        trustline: { address: USDC_ASSET.issuer, symbol: USDC_ASSET.code },
       };
 
-      const deployResult = await deployEscrow(payload, "single-release", {
-        platformId: "escala",
-      });
-      await signAndSend(deployResult.unsignedXdr);
+      const deployResult = await deployEscrow(payload, "single-release");
+      const deploySend = (await signAndSend(
+        requireUnsignedXdr(deployResult)
+      )) as InitializeSingleReleaseEscrowResponse;
+      const contractId = deploySend.contractId;
 
       const fundResult = await fundEscrow(
-        { contractId: deployResult.contractId, amount: rewardAmount, signer: businessAddress },
+        { contractId, amount: rewardAmount, signer: businessAddress },
         "single-release"
       );
-      await signAndSend(fundResult.unsignedXdr);
+      await signAndSend(requireUnsignedXdr(fundResult));
 
-      return deployResult.contractId;
+      return contractId;
     },
     [deployEscrow, ensureDeployedAndUsdcTrustline, fundEscrow, signAndSend]
   );
@@ -141,18 +145,14 @@ export function useEscrowActions() {
       const result = await changeMilestoneStatus(
         {
           contractId,
+          milestoneIndex: CONVERSION_MILESTONE_INDEX,
+          newStatus: "submitted",
+          newEvidence: evidence,
           serviceProvider: promoterAddress,
-          updates: [
-            {
-              index: CONVERSION_MILESTONE_INDEX,
-              newStatus: "submitted",
-              newEvidence: evidence,
-            },
-          ],
         },
         "single-release"
       );
-      return signAndSend(result.unsignedXdr);
+      return signAndSend(requireUnsignedXdr(result));
     },
     [changeMilestoneStatus, ensureDeployedAndUsdcTrustline, signAndSend]
   );
@@ -160,23 +160,23 @@ export function useEscrowActions() {
   /** Step 3: the business approves the milestone, then releases USDC to the promoter. */
   const approveAndRelease = useCallback(
     async (contractId: string, businessAddress: string) => {
-      const approveResult = await approveMilestones(
+      const approveResult = await approveMilestone(
         {
           contractId,
+          milestoneIndex: CONVERSION_MILESTONE_INDEX,
           approver: businessAddress,
-          milestoneIndexes: [CONVERSION_MILESTONE_INDEX],
         },
         "single-release"
       );
-      await signAndSend(approveResult.unsignedXdr);
+      await signAndSend(requireUnsignedXdr(approveResult));
 
       const releaseResult = await releaseFunds(
         { contractId, releaseSigner: businessAddress },
         "single-release"
       );
-      return signAndSend(releaseResult.unsignedXdr);
+      return signAndSend(requireUnsignedXdr(releaseResult));
     },
-    [approveMilestones, releaseFunds, signAndSend]
+    [approveMilestone, releaseFunds, signAndSend]
   );
 
   return { createCampaign, submitConversion, approveAndRelease, ensureDeployedAndUsdcTrustline };

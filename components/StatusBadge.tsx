@@ -29,9 +29,11 @@ export function StatusBadge({ tone }: { tone: Tone }) {
   );
 }
 
-export function deriveTone(escrowStatus: string, milestoneStatus?: string): Tone {
-  if (escrowStatus === "released") return "released";
-  if (escrowStatus === "disputed") return "disputed";
+type EscrowFlags = { released?: boolean; disputed?: boolean; resolved?: boolean } | undefined;
+
+export function deriveTone(flags: EscrowFlags, milestoneStatus?: string): Tone {
+  if (flags?.released) return "released";
+  if (flags?.disputed) return "disputed";
   if ((milestoneStatus || "").toLowerCase() === "submitted") return "submitted";
   return "pending";
 }

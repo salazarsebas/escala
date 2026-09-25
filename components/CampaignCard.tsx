@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import type { EscrowSummary } from "@trustless-work/escrow";
+import type { GetEscrowsFromIndexerResponse } from "@trustless-work/escrow";
 import { deriveTone, StatusBadge } from "./StatusBadge";
 import { useEscrowActions } from "@/hooks/useEscrowActions";
 import { explorerContractUrl, shortAddress } from "@/lib/stellar";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 
 type Props = {
-  campaign: EscrowSummary;
+  campaign: GetEscrowsFromIndexerResponse;
   viewerRole: "approver" | "receiver";
   onChanged?: () => void;
 };
@@ -19,22 +19,21 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
   const [evidence, setEvidence] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lastTxHash, setLastTxHash] = useState<string | null>(null);
+  const [lastMessage, setLastMessage] = useState<string | null>(null);
 
-  const snapshot = campaign.snapshot;
-  const amount = "amount" in snapshot ? snapshot.amount : null;
-  const milestone = snapshot.milestones[0];
-  const tone = deriveTone(campaign.status, milestone?.status);
-  const roles = snapshot.roles;
+  const contractId = campaign.contractId;
+  const milestone = campaign.milestones[0];
+  const tone = deriveTone(campaign.flags, milestone?.status);
+  const roles = campaign.roles;
   const promoterAddress = "receiver" in roles ? roles.receiver : undefined;
 
   const handleSubmitConversion = async () => {
-    if (!promoterAddress) return;
+    if (!promoterAddress || !contractId) return;
     setBusy(true);
     setError(null);
     try {
-      const result = await submitConversion(campaign.contractId, promoterAddress, evidence);
-      setLastTxHash(result.txHash);
+      const result = await submitConversion(contractId, promoterAddress, evidence);
+      setLastMessage(result.message);
       onChanged?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo registrar la conversion.");
@@ -44,12 +43,13 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
   };
 
   const handleApproveAndRelease = async () => {
-    const approver = roles.approvers[0];
+    if (!contractId) return;
+    const approver = roles.approver;
     setBusy(true);
     setError(null);
     try {
-      const result = await approveAndRelease(campaign.contractId, approver);
-      setLastTxHash(result.txHash);
+      const result = await approveAndRelease(contractId, approver);
+      setLastMessage(result.message);
       onChanged?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo liberar el pago.");
@@ -62,18 +62,16 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
     <div className="rounded-2xl border border-neutral-200 bg-white p-5">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-neutral-900">{snapshot.title}</h3>
-          <p className="mt-0.5 text-sm text-neutral-500">{snapshot.description}</p>
+          <h3 className="font-semibold text-neutral-900">{campaign.title}</h3>
+          <p className="mt-0.5 text-sm text-neutral-500">{campaign.description}</p>
         </div>
         <StatusBadge tone={tone} />
       </div>
 
       <div className="mb-4 flex flex-wrap gap-x-6 gap-y-1 text-sm text-neutral-500">
-        {amount !== null && (
-          <span>
-            Recompensa: <strong className="text-neutral-800">{amount} USDC</strong>
-          </span>
-        )}
+        <span>
+          Recompensa: <strong className="text-neutral-800">{campaign.amount} USDC</strong>
+        </span>
         {promoterAddress && (
           <span>
             Promotor: <span className="font-mono">{shortAddress(promoterAddress)}</span>
@@ -112,24 +110,24 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
       )}
 
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
-      {lastTxHash && (
-        <p className="mt-2 text-xs text-emerald-700">Transaccion enviada: {lastTxHash}</p>
-      )}
+      {lastMessage && <p className="mt-2 text-xs text-emerald-700">{lastMessage}</p>}
 
-      <div className="mt-4 flex items-center gap-4 border-t border-neutral-100 pt-3 text-xs">
-        <Link href={`/c/${campaign.contractId}`} className="text-neutral-500 underline">
-          Ver pagina publica
-        </Link>
-        <a
-          href={explorerContractUrl(campaign.contractId)}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 text-neutral-500 underline"
-        >
-          Ver en Stellar Expert
-          <ArrowUpRight size={12} />
-        </a>
-      </div>
+      {contractId && (
+        <div className="mt-4 flex items-center gap-4 border-t border-neutral-100 pt-3 text-xs">
+          <Link href={`/c/${contractId}`} className="text-neutral-500 underline">
+            Ver pagina publica
+          </Link>
+          <a
+            href={explorerContractUrl(contractId)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-neutral-500 underline"
+          >
+            Ver en Stellar Expert
+            <ArrowUpRight size={12} />
+          </a>
+        </div>
+      )}
     </div>
   );
 }

@@ -18,23 +18,6 @@ export const USDC_ISSUER =
 
 export const USDC_ASSET = { code: "USDC", issuer: USDC_ISSUER };
 
-// Trustless Work escrows are denominated by the USDC Stellar Asset Contract
-// (SAC), not the classic G... issuer. The SAC id is a deterministic function
-// of (asset code, issuer, network passphrase), so we derive it instead of
-// hardcoding a value that could silently drift from the configured network.
-let cachedUsdcContractId: string | null = null;
-
-export async function usdcContractId(): Promise<string> {
-  if (cachedUsdcContractId) return cachedUsdcContractId;
-  const { Asset, Networks } = await import("@stellar/stellar-sdk");
-  const passphrase =
-    STELLAR_NETWORK === "mainnet" ? Networks.PUBLIC : Networks.TESTNET;
-  cachedUsdcContractId = new Asset(USDC_ASSET.code, USDC_ASSET.issuer).contractId(
-    passphrase
-  );
-  return cachedUsdcContractId;
-}
-
 export const EXPLORER_BASE =
   STELLAR_NETWORK === "mainnet"
     ? "https://stellar.expert/explorer/public"
