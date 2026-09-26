@@ -2,10 +2,16 @@
 
 import { ReactNode } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCavos } from "@cavos/kit/react";
 import { shortAddress } from "@/lib/stellar";
 import { ThemeToggle } from "./ThemeToggle";
-import { LogOut, Sparkles } from "lucide-react";
+import { LayoutDashboard, LogOut, Plus, Sparkles } from "lucide-react";
+
+const NAV_ITEMS = [
+  { href: "/dashboard", label: "Resumen", icon: LayoutDashboard },
+  { href: "/dashboard/nueva", label: "Nueva campaña", icon: Plus },
+];
 
 export function DashboardShell({
   title,
@@ -19,24 +25,45 @@ export function DashboardShell({
   children: ReactNode;
 }) {
   const { address, user, logout, walletStatus } = useCavos();
+  const pathname = usePathname();
 
   return (
     <div className="flex min-h-screen">
       <aside className="hidden w-64 shrink-0 flex-col border-r border-neutral-200 bg-neutral-50 px-5 py-6 sm:flex dark:border-neutral-900 dark:bg-neutral-950">
-        <div className="mb-1 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-neutral-900 dark:text-white">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400 text-neutral-900">
-              <Sparkles size={16} />
-            </span>
-            <span className="text-lg font-bold">ESCALA</span>
-          </Link>
-          <ThemeToggle />
-        </div>
-        <p className="mb-8 text-xs font-medium uppercase tracking-wide text-neutral-500">
+        <Link href="/" className="mb-8 flex items-center gap-2 text-neutral-900 dark:text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400 text-neutral-900">
+            <Sparkles size={16} />
+          </span>
+          <span className="text-lg font-bold">ESCALA</span>
+        </Link>
+
+        <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wide text-neutral-500">
           Panel
         </p>
+        <nav className="flex flex-col gap-1">
+          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+            const isActive = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                  isActive
+                    ? "bg-amber-400/15 text-amber-700 dark:text-amber-300"
+                    : "text-neutral-600 hover:bg-neutral-200/60 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white"
+                }`}
+              >
+                <Icon size={16} />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
 
-        <div className="mt-auto rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="mb-2 mt-auto flex justify-end">
+          <ThemeToggle />
+        </div>
+        <div className="rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
           <p className="text-xs text-neutral-500">Conectado como</p>
           <p className="mt-0.5 truncate text-sm font-medium text-neutral-900 dark:text-white">
             {user?.name || user?.email || "Tu cuenta"}
