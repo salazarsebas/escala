@@ -53,7 +53,28 @@ export function DashboardShell({
         </div>
       </aside>
 
-      <div className="min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex items-center justify-between gap-3 border-b border-neutral-900 px-4 py-3 sm:hidden">
+          <Link href="/" className="flex items-center gap-2 text-white">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-400 text-neutral-900">
+              <Sparkles size={14} />
+            </span>
+            <span className="font-bold">ESCALA</span>
+          </Link>
+          {address && (
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs text-neutral-500">{shortAddress(address)}</span>
+              <button
+                onClick={logout}
+                className="rounded-full border border-neutral-800 p-1.5 text-neutral-400 transition hover:text-neutral-200"
+                aria-label="Cerrar sesion"
+              >
+                <LogOut size={14} />
+              </button>
+            </div>
+          )}
+        </div>
+
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-900 px-6 py-6 sm:px-10">
           <div>
             <h1 className="text-2xl font-bold text-white">{title}</h1>

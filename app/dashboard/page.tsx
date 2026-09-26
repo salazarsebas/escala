@@ -10,7 +10,16 @@ import { CampaignCard } from "@/components/CampaignCard";
 import { DashboardShell } from "@/components/DashboardShell";
 import { StatTile } from "@/components/StatTile";
 import { circleUsdcFaucetUrl } from "@/lib/stellar";
-import { ArrowUpRight, CheckCircle2, Coins, Megaphone, Plus, Users } from "lucide-react";
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Coins,
+  FileClock,
+  Megaphone,
+  Plus,
+  TrendingDown,
+  Users,
+} from "lucide-react";
 
 export default function DashboardPage() {
   const { isAuthenticated, address } = useCavos();
@@ -38,11 +47,15 @@ export default function DashboardPage() {
         .map((c) => ("receiver" in c.roles ? c.roles.receiver : undefined))
         .filter(Boolean)
     );
+    const paidUsdc = released.reduce((sum, c) => sum + c.amount, 0);
     return {
       campaigns: campaigns.length,
       validated: released.length,
-      paidUsdc: released.reduce((sum, c) => sum + c.amount, 0),
+      paidUsdc,
       promoters: promoters.size,
+      // The whole point of ESCALA: what a business actually pays per real
+      // customer, instead of guessing at ad spend efficiency.
+      costPerConversion: released.length > 0 ? paidUsdc / released.length : null,
     };
   }, [asBusiness.data]);
 
@@ -73,7 +86,7 @@ export default function DashboardPage() {
         </Link>
       }
     >
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatTile label="Campanas" value={stats.campaigns} icon={<Megaphone size={16} />} />
         <StatTile
           label="Conversiones validadas"
@@ -81,7 +94,33 @@ export default function DashboardPage() {
           icon={<CheckCircle2 size={16} />}
         />
         <StatTile label="USDC pagado" value={stats.paidUsdc} icon={<Coins size={16} />} />
+        <StatTile
+          label="Costo por cliente"
+          value={stats.costPerConversion !== null ? `${stats.costPerConversion} USDC` : "-"}
+          caption="USDC pagado / conversiones validadas"
+          icon={<TrendingDown size={16} />}
+        />
         <StatTile label="Promotores" value={stats.promoters} icon={<Users size={16} />} />
+      </div>
+
+      <div className="mb-8 flex items-start gap-3 rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/50 p-4">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-neutral-800 text-amber-400">
+          <FileClock size={16} />
+        </span>
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-sm font-semibold text-white">Financial Activity Passport</h3>
+            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300">
+              Proximamente
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-neutral-500">
+            Cada campana, conversion y pago que generas aqui queda registrado on-chain. La
+            siguiente fase convierte ese historial en un pasaporte de actividad financiera
+            verificable, para que tu negocio pueda usarlo como evidencia frente a futuras
+            evaluaciones de credito.
+          </p>
+        </div>
       </div>
 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm">
