@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCavos } from "@cavos/kit/react";
 import { useEscrowActions } from "@/hooks/useEscrowActions";
+import { describeError } from "@/lib/errors";
 import { Loader2 } from "lucide-react";
 
 const STEPS = [
@@ -47,7 +48,7 @@ export function CampaignForm() {
       setStepIndex(3);
       router.push(`/c/${contractId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo crear la campana.");
+      setError(describeError(err));
       setStepIndex(null);
     }
   };

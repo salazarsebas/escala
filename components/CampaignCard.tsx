@@ -6,6 +6,7 @@ import type { GetEscrowsFromIndexerResponse } from "@trustless-work/escrow";
 import { deriveTone, StatusBadge } from "./StatusBadge";
 import { useEscrowActions } from "@/hooks/useEscrowActions";
 import { explorerContractUrl, shortAddress } from "@/lib/stellar";
+import { describeError } from "@/lib/errors";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 
 type Props = {
@@ -36,7 +37,7 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
       setLastMessage(result.message);
       onChanged?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo registrar la conversion.");
+      setError(describeError(err));
     } finally {
       setBusy(false);
     }
@@ -52,7 +53,7 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
       setLastMessage(result.message);
       onChanged?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo liberar el pago.");
+      setError(describeError(err));
     } finally {
       setBusy(false);
     }
