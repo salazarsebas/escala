@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCavos } from "@cavos/kit/react";
 import { CampaignForm } from "@/components/CampaignForm";
+import { DashboardShell } from "@/components/DashboardShell";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
 // Cavos's OAuth redirect target is the exact page the login started from, so
@@ -23,27 +24,27 @@ export default function NewCampaignPage() {
 
   if (!isAuthenticated || !address) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center text-neutral-400">
+      <div className="flex min-h-screen items-center justify-center text-neutral-500">
         <Loader2 className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-xl px-6 py-10">
-      <Link
-        href="/dashboard"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-800"
-      >
-        <ArrowLeft size={14} />
-        Volver al panel
-      </Link>
-      <h1 className="mb-1 text-2xl font-bold text-neutral-900">Nueva campana</h1>
-      <p className="mb-8 text-sm text-neutral-500">
-        El presupuesto se deposita en un escrow de Trustless Work en Stellar. Se libera en USDC
-        al promotor solo cuando tu apruebes la conversion.
-      </p>
-      <CampaignForm />
-    </div>
+    <DashboardShell
+      title="Nueva campana"
+      subtitle="El presupuesto se deposita en un escrow de Trustless Work en Stellar. Se libera en USDC al promotor solo cuando tu apruebes la conversion."
+    >
+      <div className="mx-auto max-w-xl">
+        <Link
+          href="/dashboard"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-300"
+        >
+          <ArrowLeft size={14} />
+          Volver al panel
+        </Link>
+        <CampaignForm />
+      </div>
+    </DashboardShell>
   );
 }

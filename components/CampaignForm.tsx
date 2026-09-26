@@ -54,9 +54,12 @@ export function CampaignForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-5 rounded-2xl border border-neutral-800 bg-neutral-900 p-6"
+    >
       <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">
+        <label className="mb-1 block text-sm font-medium text-neutral-300">
           Nombre de la campana
         </label>
         <input
@@ -64,12 +67,12 @@ export function CampaignForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ej. Cafeteria Maria - clientes nuevos"
-          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-neutral-900"
+          className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-2.5 text-sm text-white outline-none placeholder:text-neutral-600 focus:border-neutral-500"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">
+        <label className="mb-1 block text-sm font-medium text-neutral-300">
           Descripcion / condicion de la recompensa
         </label>
         <textarea
@@ -78,12 +81,12 @@ export function CampaignForm() {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Ej. Se paga cuando un cliente nuevo muestra el codigo y compra en tienda."
           rows={3}
-          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-neutral-900"
+          className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-2.5 text-sm text-white outline-none placeholder:text-neutral-600 focus:border-neutral-500"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">
+        <label className="mb-1 block text-sm font-medium text-neutral-300">
           Recompensa por conversion (USDC)
         </label>
         <input
@@ -93,16 +96,16 @@ export function CampaignForm() {
           step="0.01"
           value={reward}
           onChange={(e) => setReward(e.target.value)}
-          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-neutral-900"
+          className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-2.5 text-sm text-white outline-none focus:border-neutral-500"
         />
-        <p className="mt-1 text-xs text-neutral-400">
+        <p className="mt-1 text-xs text-neutral-500">
           Este monto se deposita ahora mismo en el escrow y se libera cuando apruebes la
           conversion.
         </p>
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">
+        <label className="mb-1 block text-sm font-medium text-neutral-300">
           Direccion Stellar del promotor
         </label>
         <input
@@ -110,19 +113,19 @@ export function CampaignForm() {
           value={promoter}
           onChange={(e) => setPromoter(e.target.value)}
           placeholder="G..."
-          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 font-mono text-sm outline-none focus:border-neutral-900"
+          className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-2.5 font-mono text-sm text-white outline-none placeholder:text-neutral-600 focus:border-neutral-500"
         />
-        <p className="mt-1 text-xs text-neutral-400">
+        <p className="mt-1 text-xs text-neutral-500">
           Pidele a tu promotor que entre a ESCALA y copie su direccion desde su panel.
         </p>
       </div>
 
       {error && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="rounded-xl bg-red-400/10 px-4 py-3 text-sm text-red-300">{error}</p>
       )}
 
       {submitting && (
-        <p className="flex items-center gap-2 rounded-xl bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
+        <p className="flex items-center gap-2 rounded-xl bg-neutral-800 px-4 py-3 text-sm text-neutral-300">
           <Loader2 size={16} className="animate-spin" />
           {STEPS[stepIndex]}
         </p>
@@ -131,7 +134,7 @@ export function CampaignForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-full bg-neutral-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50"
+        className="w-full rounded-full bg-amber-400 px-5 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-amber-300 disabled:opacity-50"
       >
         {submitting ? "Creando campana..." : "Depositar presupuesto y crear campana"}
       </button>
