@@ -8,6 +8,7 @@ Built for the **Stellar Odyssey Peru** hackathon, **Open Build** track.
 [![Live app](https://img.shields.io/badge/live-escala.acachete.xyz-facc15)](https://escala.acachete.xyz)
 [![Network](https://img.shields.io/badge/network-Stellar%20Testnet-14b6e0)](https://stellarview.acachete.xyz/es/testnet/tx/1783def018811b729092fada479b724637d49c117f305a818356239a3a018671)
 [![Stack](https://img.shields.io/badge/stack-Next.js%2016%20%2B%20TypeScript-000000)](#how-its-built)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 | | |
 |---|---|
@@ -162,3 +163,7 @@ vercel deploy
 
 Set the same environment variables from `.env.example` in the Vercel
 project before the first deploy.
+
+## License
+
+[MIT](LICENSE)
