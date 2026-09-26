@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -38,10 +39,36 @@ export const metadata: Metadata = {
   },
 };
 
+// Runs before paint so switching themes never flashes the wrong one.
+// Defaults to dark (ESCALA's primary look) unless the viewer picked light before.
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem("escala-theme");
+    if (stored === "light") return;
+    document.documentElement.classList.add("dark");
+  } catch (e) {
+    document.documentElement.classList.add("dark");
+  }
+})();
+`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-neutral-950 text-neutral-50">
+    <html lang="es" className="h-full antialiased" suppressHydrationWarning>
+      <head>
+        {/* next/script's beforeInteractive strategy is Next.js's documented
+            mechanism for a script that must run before hydration (avoids
+            the "script tag rendered by a component" warning a raw <script>
+            triggers). It still mutates <html> outside of React's own
+            render, so the class the server sent and what's on the DOM by
+            hydration time legitimately differ; suppressHydrationWarning
+            above covers that. */}
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeInitScript}
+        </Script>
+      </head>
+      <body className="min-h-full flex flex-col bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
         <Providers>{children}</Providers>
       </body>
     </html>

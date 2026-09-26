@@ -38,7 +38,7 @@ export default function NewCampaignPage() {
       <div className="mx-auto max-w-xl">
         <Link
           href="/dashboard"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-300"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300"
         >
           <ArrowLeft size={14} />
           Volver al panel

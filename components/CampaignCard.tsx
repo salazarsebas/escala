@@ -60,24 +60,30 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
   };
 
   return (
-    <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5">
+    <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 dark:border-neutral-800 dark:bg-neutral-900">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-white">{campaign.title}</h3>
-          <p className="mt-0.5 text-sm text-neutral-400">{campaign.description}</p>
+          <h3 className="font-semibold text-neutral-900 dark:text-white">{campaign.title}</h3>
+          <p className="mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">
+            {campaign.description}
+          </p>
         </div>
         <StatusBadge tone={tone} />
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-x-8 gap-y-2 border-t border-neutral-800 pt-4 text-sm">
+      <div className="mb-4 flex flex-wrap gap-x-8 gap-y-2 border-t border-neutral-200 pt-4 text-sm dark:border-neutral-800">
         <div>
           <p className="text-xs text-neutral-500">Recompensa</p>
-          <p className="font-medium text-white">{campaign.amount} USDC</p>
+          <p className="font-medium text-neutral-900 dark:text-white">
+            {campaign.amount} USDC
+          </p>
         </div>
         {promoterAddress && (
           <div>
             <p className="text-xs text-neutral-500">Promotor</p>
-            <p className="font-mono text-neutral-300">{shortAddress(promoterAddress)}</p>
+            <p className="font-mono text-neutral-700 dark:text-neutral-300">
+              {shortAddress(promoterAddress)}
+            </p>
           </div>
         )}
       </div>
@@ -88,12 +94,12 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
             value={evidence}
             onChange={(e) => setEvidence(e.target.value)}
             placeholder="Evidencia (ej. numero de boleta, foto, referencia)"
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-600 focus:border-neutral-500"
+            className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:placeholder:text-neutral-600"
           />
           <button
             onClick={handleSubmitConversion}
             disabled={busy || !evidence.trim()}
-            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-neutral-900 transition hover:bg-neutral-200 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-neutral-700 disabled:opacity-50 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
           >
             {busy && <Loader2 size={14} className="animate-spin" />}
             Registrar conversion
@@ -116,15 +122,18 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
       {lastMessage && <p className="mt-2 text-xs text-emerald-400">{lastMessage}</p>}
 
       {contractId && (
-        <div className="mt-4 flex items-center gap-4 border-t border-neutral-800 pt-3 text-xs">
-          <Link href={`/c/${contractId}`} className="text-neutral-500 underline hover:text-neutral-300">
+        <div className="mt-4 flex items-center gap-4 border-t border-neutral-200 pt-3 text-xs dark:border-neutral-800">
+          <Link
+            href={`/c/${contractId}`}
+            className="text-neutral-500 underline hover:text-neutral-900 dark:hover:text-neutral-300"
+          >
             Ver pagina publica
           </Link>
           <a
             href={explorerContractUrl(contractId)}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-neutral-500 underline hover:text-neutral-300"
+            className="inline-flex items-center gap-1 text-neutral-500 underline hover:text-neutral-900 dark:hover:text-neutral-300"
           >
             Ver en StellarView
             <ArrowUpRight size={12} />

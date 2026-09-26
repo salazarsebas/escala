@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { useCavos } from "@cavos/kit/react";
 import { shortAddress } from "@/lib/stellar";
+import { ThemeToggle } from "./ThemeToggle";
 import { LogOut, Sparkles } from "lucide-react";
 
 export function DashboardShell({
@@ -21,20 +22,23 @@ export function DashboardShell({
 
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-neutral-900 bg-neutral-950 px-5 py-6 sm:flex">
-        <Link href="/" className="mb-1 flex items-center gap-2 text-white">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400 text-neutral-900">
-            <Sparkles size={16} />
-          </span>
-          <span className="text-lg font-bold">ESCALA</span>
-        </Link>
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-neutral-200 bg-neutral-50 px-5 py-6 sm:flex dark:border-neutral-900 dark:bg-neutral-950">
+        <div className="mb-1 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-neutral-900 dark:text-white">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400 text-neutral-900">
+              <Sparkles size={16} />
+            </span>
+            <span className="text-lg font-bold">ESCALA</span>
+          </Link>
+          <ThemeToggle />
+        </div>
         <p className="mb-8 text-xs font-medium uppercase tracking-wide text-neutral-500">
           Panel
         </p>
 
-        <div className="mt-auto rounded-xl border border-neutral-800 bg-neutral-900 p-4">
+        <div className="mt-auto rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
           <p className="text-xs text-neutral-500">Conectado como</p>
-          <p className="mt-0.5 truncate text-sm font-medium text-white">
+          <p className="mt-0.5 truncate text-sm font-medium text-neutral-900 dark:text-white">
             {user?.name || user?.email || "Tu cuenta"}
           </p>
           {address && (
@@ -45,7 +49,7 @@ export function DashboardShell({
           )}
           <button
             onClick={logout}
-            className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-neutral-400 transition hover:text-neutral-200"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
           >
             <LogOut size={12} />
             Cerrar sesion
@@ -54,31 +58,38 @@ export function DashboardShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center justify-between gap-3 border-b border-neutral-900 px-4 py-3 sm:hidden">
-          <Link href="/" className="flex items-center gap-2 text-white">
+        <div className="flex items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 sm:hidden dark:border-neutral-900">
+          <Link href="/" className="flex items-center gap-2 text-neutral-900 dark:text-white">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-400 text-neutral-900">
               <Sparkles size={14} />
             </span>
             <span className="font-bold">ESCALA</span>
           </Link>
-          {address && (
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-neutral-500">{shortAddress(address)}</span>
-              <button
-                onClick={logout}
-                className="rounded-full border border-neutral-800 p-1.5 text-neutral-400 transition hover:text-neutral-200"
-                aria-label="Cerrar sesion"
-              >
-                <LogOut size={14} />
-              </button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {address && (
+              <>
+                <span className="font-mono text-xs text-neutral-500">
+                  {shortAddress(address)}
+                </span>
+                <button
+                  onClick={logout}
+                  className="rounded-full border border-neutral-200 p-1.5 text-neutral-500 transition hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+                  aria-label="Cerrar sesion"
+                >
+                  <LogOut size={14} />
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-900 px-6 py-6 sm:px-10">
+        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 px-6 py-6 sm:px-10 dark:border-neutral-900">
           <div>
-            <h1 className="text-2xl font-bold text-white">{title}</h1>
-            {subtitle && <p className="mt-1 text-sm text-neutral-400">{subtitle}</p>}
+            <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">{title}</h1>
+            {subtitle && (
+              <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{subtitle}</p>
+            )}
           </div>
           {actions}
         </header>

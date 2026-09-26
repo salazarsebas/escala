@@ -10,6 +10,7 @@ import { CampaignCard } from "@/components/CampaignCard";
 import { DashboardShell } from "@/components/DashboardShell";
 import { StatTile } from "@/components/StatTile";
 import { circleUsdcFaucetUrl } from "@/lib/stellar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -61,9 +62,10 @@ export default function DashboardPage() {
 
   if (!isAuthenticated || !address) {
     return (
-      <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 px-6 text-center">
-        <h1 className="text-2xl font-bold text-white">Entra a tu panel de ESCALA</h1>
-        <p className="text-sm text-neutral-400">
+      <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 px-6 text-center">
+        <ThemeToggle className="absolute right-6 top-6" />
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Entra a tu panel de ESCALA</h1>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
           Conecta con Google para crear campanas como negocio o registrar conversiones como
           promotor. Tu wallet en Stellar se crea automaticamente.
         </p>
@@ -103,13 +105,13 @@ export default function DashboardPage() {
         <StatTile label="Promotores" value={stats.promoters} icon={<Users size={16} />} />
       </div>
 
-      <div className="mb-8 flex items-start gap-3 rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/50 p-4">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-neutral-800 text-amber-400">
+      <div className="mb-8 flex items-start gap-3 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-neutral-200 text-amber-600 dark:bg-neutral-800 dark:text-amber-400">
           <FileClock size={16} />
         </span>
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-white">Financial Activity Passport</h3>
+            <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Financial Activity Passport</h3>
             <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300">
               Proximamente
             </span>
@@ -123,8 +125,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm">
-        <p className="text-neutral-400">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm dark:border-neutral-800 dark:bg-neutral-900">
+        <p className="text-neutral-600 dark:text-neutral-400">
           Tu wallet se fondea sola con XLM de prueba la primera vez que crees una campana o
           registres una conversion.
         </p>
@@ -132,7 +134,7 @@ export default function DashboardPage() {
           href={circleUsdcFaucetUrl(address)}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neutral-700 px-3 py-1.5 text-xs font-semibold text-neutral-200 transition hover:border-neutral-500"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neutral-300 px-3 py-1.5 text-xs font-semibold text-neutral-700 transition hover:border-neutral-500 dark:border-neutral-700 dark:text-neutral-200"
         >
           Conseguir USDC de prueba
           <ArrowUpRight size={12} />
@@ -140,11 +142,11 @@ export default function DashboardPage() {
       </div>
 
       <section className="mb-12">
-        <h2 className="mb-4 text-lg font-semibold text-white">Mis campanas (negocio)</h2>
+        <h2 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">Mis campanas (negocio)</h2>
 
         {asBusiness.isLoading && <p className="text-sm text-neutral-500">Cargando...</p>}
         {asBusiness.data && asBusiness.data.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-neutral-800 p-6 text-center text-sm text-neutral-500">
+          <p className="rounded-2xl border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500 dark:border-neutral-800">
             Aun no creaste ninguna campana. Crea la primera y deposita el presupuesto en USDC.
           </p>
         )}
@@ -161,17 +163,17 @@ export default function DashboardPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-white">Mis promociones (promotor)</h2>
+        <h2 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">Mis promociones (promotor)</h2>
         <p className="mb-4 text-sm text-neutral-500">
           Tu direccion para que un negocio te agregue a una campana:{" "}
-          <span className="rounded bg-neutral-800 px-2 py-0.5 font-mono text-xs text-neutral-300">
+          <span className="rounded bg-neutral-200 px-2 py-0.5 font-mono text-xs text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
             {address}
           </span>
         </p>
 
         {asPromoter.isLoading && <p className="text-sm text-neutral-500">Cargando...</p>}
         {asPromoter.data && asPromoter.data.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-neutral-800 p-6 text-center text-sm text-neutral-500">
+          <p className="rounded-2xl border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500 dark:border-neutral-800">
             Todavia ningun negocio te agrego como promotor. Comparte tu direccion de arriba.
           </p>
         )}
