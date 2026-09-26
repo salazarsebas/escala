@@ -18,10 +18,9 @@ export const USDC_ISSUER =
 
 export const USDC_ASSET = { code: "USDC", issuer: USDC_ISSUER };
 
-export const EXPLORER_BASE =
-  STELLAR_NETWORK === "mainnet"
-    ? "https://stellar.expert/explorer/public"
-    : "https://stellar.expert/explorer/testnet";
+// StellarView (stellarview.acachete.xyz), not Stellar Expert: same explorer
+// job, our own branding.
+export const EXPLORER_BASE = `https://stellarview.acachete.xyz/es/${STELLAR_NETWORK}`;
 
 export function explorerTxUrl(hash: string) {
   return `${EXPLORER_BASE}/tx/${hash}`;
