@@ -5,9 +5,15 @@ businesses, built on Stellar.
 
 Built for the **Stellar Odyssey Peru** hackathon, **Open Build** track.
 
-- **Live app:** https://escala.acachete.xyz
-- **On-chain evidence:** [a real escrow transaction on Stellar Testnet](https://stellarview.acachete.xyz/es/testnet/tx/1783def018811b729092fada479b724637d49c117f305a818356239a3a018671),
-  viewable on [StellarView](https://stellarview.acachete.xyz)
+[![Live app](https://img.shields.io/badge/live-escala.acachete.xyz-facc15)](https://escala.acachete.xyz)
+[![Network](https://img.shields.io/badge/network-Stellar%20Testnet-14b6e0)](https://stellarview.acachete.xyz/es/testnet/tx/1783def018811b729092fada479b724637d49c117f305a818356239a3a018671)
+[![Stack](https://img.shields.io/badge/stack-Next.js%2016%20%2B%20TypeScript-000000)](#how-its-built)
+
+| | |
+|---|---|
+| **Live app** | https://escala.acachete.xyz |
+| **On-chain evidence** | [A real escrow transaction on Stellar Testnet](https://stellarview.acachete.xyz/es/testnet/tx/1783def018811b729092fada479b724637d49c117f305a818356239a3a018671), viewable on [StellarView](https://stellarview.acachete.xyz) |
+| **Repository** | https://github.com/salazarsebas/escala |
 
 ## The problem
 
@@ -44,7 +50,8 @@ conditional on approval. That's the product.
 | Wallets | [Cavos](https://cavos.xyz) social login | Businesses and promoters sign in with Google, no seed phrases. Cavos creates a self-custodial Stellar account per user and exposes `signXdr()`, so it can sign transactions built by any third-party API, not just its own SDK calls. |
 | Escrow | [Trustless Work](https://trustlesswork.com) `@trustless-work/escrow@3` | Instead of writing and auditing a custom Soroban escrow contract in a one-day hackathon, ESCALA integrates Trustless Work's audited, already-deployed single-release escrow contracts via their REST/React SDK. Every campaign budget is a real on-chain escrow. |
 | Asset | USDC (Stellar Asset Contract) | Rewards and budgets are denominated in USDC so the numbers on screen are real dollars, not a points system. |
-| App | Next.js 16 (App Router) + TypeScript + Tailwind | Fast to ship, deploys to Vercel in one command. |
+| Explorer | [StellarView](https://stellarview.acachete.xyz) | Every contract and transaction the app surfaces links out to StellarView for independent, on-chain verification. |
+| App | Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 | Fast to ship, deploys to Vercel in one command. Light/dark theme and a mobile-responsive layout throughout. |
 
 ### Escrow lifecycle (one campaign = one Trustless Work escrow)
 
@@ -80,16 +87,20 @@ requires.
 
 ```
 app/
-  page.tsx                 Landing page
-  dashboard/page.tsx        Wallet-gated panel: "my campaigns" (business) + "my referrals" (promoter)
-  dashboard/nueva/page.tsx  Create a campaign (deploy + fund the escrow)
-  c/[contractId]/page.tsx   Public, wallet-free campaign page (QR + share link)
-  providers.tsx             Cavos + Trustless Work + React Query providers
+  page.tsx                   Landing page
+  providers.tsx               React Query + Trustless Work + Cavos providers
+  dashboard/page.tsx          Wallet-gated panel: "my campaigns" (business) + "my referrals" (promoter)
+  dashboard/nueva/page.tsx    Create a campaign (deploy + fund the escrow)
+  c/[contractId]/page.tsx     Public, wallet-free campaign page (QR + share link)
+  sitemap.ts, robots.ts       SEO
 hooks/
-  useEscrowActions.ts        deploy/fund/submit/approve/release, wired to Cavos signing
+  useEscrowActions.ts          Deploy/fund/submit/approve/release, wired to Cavos signing
 lib/
-  stellar.ts                 network + USDC constants, StellarView links
-components/                  ConnectButton, CampaignForm, CampaignCard, QrShare, StatusBadge
+  stellar.ts                   Network + USDC constants, StellarView links, Friendbot helper
+  errors.ts                    Surfaces real API error messages instead of generic HTTP errors
+components/
+  DashboardShell.tsx            Authenticated app shell: sidebar nav, account card, theme toggle
+  CampaignForm.tsx, CampaignCard.tsx, StatTile.tsx, StatusBadge.tsx, QrShare.tsx, ConnectButton.tsx, ThemeToggle.tsx
 ```
 
 ## Running it locally
@@ -100,26 +111,24 @@ cp .env.example .env.local
 npm run dev
 ```
 
-You need two sets of credentials, both free:
+`.env.local` needs two credentials, both free:
 
-1. **Cavos App ID**: create an app at the [Cavos console](https://cavos.xyz),
-   enable Stellar, copy the App ID into `NEXT_PUBLIC_CAVOS_APP_ID`.
-2. **Trustless Work API key**: generate a testnet key from their
-   [dashboard](https://dapp.trustlesswork.com/settings?tab=api-keys) (Testnet
-   tab, `ESCROW_MANAGER` role), copy it into `NEXT_PUBLIC_TW_API_KEY`.
+1. **Cavos App ID** (`NEXT_PUBLIC_CAVOS_APP_ID`): create an app at the
+   [Cavos console](https://cavos.xyz), enable Stellar.
+2. **Trustless Work API key** (`NEXT_PUBLIC_TW_API_KEY`): generate a testnet
+   key from their [dashboard](https://dapp.trustlesswork.com/settings?tab=api-keys)
+   (Testnet tab, `ESCROW_MANAGER` role).
 
-Everything else in `.env.example` has a sensible testnet default (network,
-USDC issuer).
+Everything else in `.env.example` (network, USDC issuer, app URL) has a
+sensible testnet default.
 
 To try the full flow you need two wallets: sign in once as the business to
 create a campaign (you'll paste in a promoter's Stellar address), then sign
 in as the promoter (a second browser profile / incognito window works well)
 to register the conversion, then switch back to the business to approve
-and release the payout. Both accounts need a small amount of testnet XLM
-(for reserves) and a testnet USDC trustline, which the app opens
-automatically the first time each wallet touches USDC; fund the account
-itself from [Friendbot](https://developers.stellar.org/docs/build/smart-contracts/getting-started/create-account#create-account)
-first.
+and release the payout. As soon as each wallet lands on the dashboard, the
+app funds it with testnet XLM via Friendbot and opens its USDC trustline
+automatically, so neither account needs manual setup before it can act.
 
 ## Hackathon submission notes
 
