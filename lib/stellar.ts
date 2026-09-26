@@ -39,3 +39,31 @@ export function shortAddress(address: string, size = 4) {
   if (!address) return "";
   return `${address.slice(0, size)}...${address.slice(-size)}`;
 }
+
+/**
+ * Tops up a testnet account with test XLM via Stellar's public Friendbot.
+ * Works on brand-new (creates it) and already-deployed accounts (refunds
+ * it), which is exactly what a lazily-deployed Cavos wallet needs before it
+ * can afford a trustline's reserve. Best-effort: a faucet hiccup should
+ * never block the rest of the flow, so failures are swallowed.
+ */
+export async function fundWithFriendbot(address: string): Promise<void> {
+  if (STELLAR_NETWORK !== "testnet") return;
+  try {
+    await fetch(`https://friendbot.stellar.org/?addr=${encodeURIComponent(address)}`);
+  } catch {
+    // Faucet unreachable/rate-limited: proceed with whatever balance exists.
+  }
+}
+
+/**
+ * Circle's public testnet USDC faucet, prefilled with the account and
+ * network so getting real testnet USDC into a wallet is a couple of clicks
+ * instead of a manual copy-paste. There's no public no-auth API for this
+ * (Circle's /v1/faucet/drips needs an authenticated, upgraded account), so
+ * this is the honest automation ceiling for a hackathon MVP.
+ */
+export function circleUsdcFaucetUrl(address: string) {
+  const params = new URLSearchParams({ address, chain: "STELLAR" });
+  return `https://faucet.circle.com/?${params.toString()}`;
+}

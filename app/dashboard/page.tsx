@@ -6,7 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useGetEscrowsFromIndexerByRole } from "@trustless-work/escrow";
 import { ConnectButton } from "@/components/ConnectButton";
 import { CampaignCard } from "@/components/CampaignCard";
-import { Plus } from "lucide-react";
+import { circleUsdcFaucetUrl } from "@/lib/stellar";
+import { ArrowUpRight, Plus } from "lucide-react";
 
 export default function DashboardPage() {
   const { isAuthenticated, address } = useCavos();
@@ -48,6 +49,22 @@ export default function DashboardPage() {
         </div>
         <ConnectButton />
       </header>
+
+      <div className="mb-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm">
+        <p className="text-neutral-600">
+          Tu wallet se fondea sola con XLM de prueba la primera vez que crees una campana o
+          registres una conversion.
+        </p>
+        <a
+          href={circleUsdcFaucetUrl(address)}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 transition hover:border-neutral-400"
+        >
+          Conseguir USDC de prueba
+          <ArrowUpRight size={12} />
+        </a>
+      </div>
 
       <section className="mb-12">
         <div className="mb-4 flex items-center justify-between">

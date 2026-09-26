@@ -13,7 +13,7 @@ import {
   type InitializeSingleReleaseEscrowResponse,
 } from "@trustless-work/escrow";
 import { useCavos } from "@cavos/kit/react";
-import { USDC_ASSET } from "@/lib/stellar";
+import { STELLAR_NETWORK, USDC_ASSET, fundWithFriendbot } from "@/lib/stellar";
 
 // ESCALA's on-chain unit of work: one campaign == one Trustless Work
 // single-release escrow with exactly one milestone ("a verified
@@ -71,18 +71,27 @@ export function useEscrowActions() {
 
   /**
    * Cavos wallets are lazily deployed: the account doesn't exist on-chain
-   * until its first `execute()`. Both addTrustline and anything Trustless
-   * Work builds (which needs a real sequence number) require the account to
-   * exist first, so every action routes through this before touching USDC
-   * or signing an escrow transaction.
+   * until its first `execute()`, and even once deployed it starts with
+   * essentially no spendable XLM (the sponsored creation covers only the
+   * bare minimum), which isn't enough to cover a trustline's reserve.
+   *
+   * On testnet, Friendbot solves both problems in one call: it creates
+   * the account if missing and tops it up with real test XLM either way,
+   * so we skip Cavos's own lazy-deploy path entirely there and just let
+   * the account pay for its own reserves. Mainnet has no faucet, so it
+   * still goes through Cavos's sponsored deploy.
    */
   const ensureDeployedAndUsdcTrustline = useCallback(async () => {
     const stellarWallet = requireStellarWallet();
-    if (!stellarWallet.isDeployed) {
+
+    if (STELLAR_NETWORK === "testnet") {
+      await fundWithFriendbot(stellarWallet.address);
+    } else if (!stellarWallet.isDeployed) {
       // Sponsored self-payment of 1 stroop: the smallest possible transfer,
       // used purely to trigger lazy account creation (0 XLM cost to the user).
       await stellarWallet.execute(BigInt(1), stellarWallet.address);
     }
+
     const balance = await stellarWallet.tokenBalance(USDC_ASSET);
     if (balance === "0") {
       // tokenBalance() also returns "0" when the trustline doesn't exist yet;
