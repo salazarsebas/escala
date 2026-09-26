@@ -3,8 +3,11 @@
 **Turn your sales into growth.** On-chain performance marketing for micro
 businesses, built on Stellar.
 
-Built for the **Stellar Odyssey Peru** hackathon (Open Build / Wildcard
-track: Stellar + Soroban + USDC).
+Built for the **Stellar Odyssey Peru** hackathon, **Open Build** track.
+
+- **Live app:** https://escala.acachete.xyz
+- **On-chain evidence:** [a real escrow transaction on Stellar Testnet](https://stellarview.acachete.xyz/es/testnet/tx/1783def018811b729092fada479b724637d49c117f305a818356239a3a018671),
+  viewable on [StellarView](https://stellarview.acachete.xyz)
 
 ## The problem
 
@@ -64,7 +67,7 @@ Promoter marks the conversion  ->  useChangeMilestoneStatus() -> "submitted"
 Business reviews and approves  ->  useApproveMilestone() -> useReleaseFunds()
         |
         v
-USDC lands in the promoter's Cavos wallet, verifiable on Stellar Expert
+USDC lands in the promoter's Cavos wallet, verifiable on StellarView
 ```
 
 Everything that moves money goes through Trustless Work's build-unsigned-XDR,
@@ -85,7 +88,7 @@ app/
 hooks/
   useEscrowActions.ts        deploy/fund/submit/approve/release, wired to Cavos signing
 lib/
-  stellar.ts                 network + USDC constants, Stellar Expert links
+  stellar.ts                 network + USDC constants, StellarView links
 components/                  ConnectButton, CampaignForm, CampaignCard, QrShare, StatusBadge
 ```
 
@@ -120,19 +123,18 @@ first.
 
 ## Hackathon submission notes
 
-- **Track:** Open Build / Wildcard (crosses into RWA / real-time finance:
-  campaign budgets are programmable money released against real-world
-  results).
+- **Track:** Open Build. Also crosses into RWA / real-time finance: campaign
+  budgets are programmable money released against real-world results.
 - **On-chain verification:** every campaign is a real Trustless Work escrow
   contract on Stellar Testnet. The dashboard and the public campaign page
-  both link straight to Stellar Expert for the contract and its
-  transactions.
+  both link straight to [StellarView](https://stellarview.acachete.xyz) for
+  the contract and its transactions.
 - **MVP scope:** one campaign, one promoter, one conversion cycle, by
   design, matching the brief's own MVP definition. Multiple promoters per
   campaign, in-app analytics, and the "Financial Activity Passport" (turning
   a business's campaign history into portable, consent-based credit
   evidence) are the next phases, not this weekend's build.
-- **Demo video:** add the 3-minute walkthrough link here before submitting.
+- **Demo video:** recorded, link to be added on submission.
 
 ## Roadmap
 
