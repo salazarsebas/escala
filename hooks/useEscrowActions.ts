@@ -85,10 +85,20 @@ export function useEscrowActions() {
     const stellarWallet = requireStellarWallet();
 
     if (STELLAR_NETWORK === "testnet") {
+      // Creates the account on-chain (if missing) and tops it up with real
+      // test XLM, covering the reserve a trustline needs that Cavos's own
+      // sponsored creation alone wouldn't leave room for.
       await fundWithFriendbot(stellarWallet.address);
-    } else if (!stellarWallet.isDeployed) {
-      // Sponsored self-payment of 1 stroop: the smallest possible transfer,
-      // used purely to trigger lazy account creation (0 XLM cost to the user).
+    }
+
+    if (!stellarWallet.isDeployed) {
+      // Friendbot only touches the network, not Cavos's own account model:
+      // the wallet's status stays "undeployed" until Cavos itself registers
+      // the control key on-chain, which is what addTrustline() gates on.
+      // execute() does that idempotently (it detects the account already
+      // exists and just writes the control-key entry instead of
+      // re-creating it), flipping isDeployed to true. Sponsored self-payment
+      // of 1 stroop, 0 XLM cost to the user either way.
       await stellarWallet.execute(BigInt(1), stellarWallet.address);
     }
 

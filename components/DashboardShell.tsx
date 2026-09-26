@@ -1,9 +1,10 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCavos } from "@cavos/kit/react";
+import { useEscrowActions } from "@/hooks/useEscrowActions";
 import { shortAddress } from "@/lib/stellar";
 import { ThemeToggle } from "./ThemeToggle";
 import { LayoutDashboard, LogOut, Plus, Sparkles } from "lucide-react";
@@ -25,7 +26,23 @@ export function DashboardShell({
   children: ReactNode;
 }) {
   const { address, user, logout, walletStatus } = useCavos();
+  const { ensureDeployedAndUsdcTrustline } = useEscrowActions();
   const pathname = usePathname();
+
+  // DashboardShell only renders once Cavos has authenticated the user, so
+  // this is the earliest safe point to deploy the wallet and open its USDC
+  // trustline: by the time they reach the campaign or conversion form,
+  // that setup is already done instead of blocking on their first action.
+  // createCampaign/submitConversion still call this themselves as a
+  // fallback, so a failure here just means the user sees it there instead.
+  const trustlineSetupStarted = useRef(false);
+  useEffect(() => {
+    if (!address || trustlineSetupStarted.current) return;
+    trustlineSetupStarted.current = true;
+    ensureDeployedAndUsdcTrustline().catch(() => {
+      trustlineSetupStarted.current = false;
+    });
+  }, [address, ensureDeployedAndUsdcTrustline]);
 
   return (
     <div className="flex min-h-screen">
