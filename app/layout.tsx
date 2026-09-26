@@ -12,14 +12,14 @@ export const metadata: Metadata = {
     template: "%s | ESCALA",
   },
   description:
-    "ESCALA es una plataforma de performance marketing on-chain para microempresas: crea campanas, deposita presupuesto en USDC y paga automaticamente a tus promotores cuando consiguen resultados verificables en Stellar.",
+    "ESCALA es una plataforma de performance marketing on-chain para microempresas: crea campañas, deposita presupuesto en USDC y paga automáticamente a tus promotores cuando consiguen resultados verificables en Stellar.",
   keywords: [
     "Stellar",
     "Soroban",
     "USDC",
     "performance marketing",
     "microempresas",
-    "Peru",
+    "Perú",
     "escrow",
     "Trustless Work",
   ],

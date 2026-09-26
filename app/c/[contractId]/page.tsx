@@ -19,8 +19,8 @@ const TONE_STYLES: Record<Tone, string> = {
 };
 
 const TONE_LABELS: Record<Tone, string> = {
-  pending: "Esperando conversion",
-  submitted: "Conversion registrada",
+  pending: "Esperando conversión",
+  submitted: "Conversión registrada",
   released: "Recompensa pagada",
   disputed: "En disputa",
 };
@@ -49,7 +49,7 @@ export default function PublicCampaignPage({
     queryFn: async () => {
       const results = await getEscrowByContractIds({ contractIds: [contractId] });
       const escrow = results[0];
-      if (!escrow) throw new Error("Campana no encontrada");
+      if (!escrow) throw new Error("Campaña no encontrada");
       return escrow;
     },
     retry: false,
@@ -67,9 +67,9 @@ export default function PublicCampaignPage({
     return (
       <div className="min-h-screen bg-white">
         <div className="mx-auto max-w-md px-6 py-24 text-center">
-          <h1 className="text-xl font-bold text-neutral-900">Campana no encontrada</h1>
+          <h1 className="text-xl font-bold text-neutral-900">Campaña no encontrada</h1>
           <p className="mt-2 text-sm text-neutral-500">
-            Verifica el enlace o el codigo QR que te compartieron.
+            Verifica el enlace o el código QR que te compartieron.
           </p>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function PublicCampaignPage({
       <div className="mx-auto max-w-xl px-6 py-14">
         <div className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-amber-600">
           <Sparkles size={14} />
-          Campana ESCALA en Stellar
+          Campaña ESCALA en Stellar
         </div>
 
         <h1 className="text-3xl font-bold text-neutral-900">{data.title}</h1>
@@ -100,17 +100,17 @@ export default function PublicCampaignPage({
             {TONE_LABELS[tone]}
           </span>
           <span className="text-sm text-neutral-500">
-            Recompensa por conversion verificada:{" "}
+            Recompensa por conversión verificada:{" "}
             <strong className="text-neutral-900">{data.amount} USDC</strong>
           </span>
         </div>
 
         <div className="mt-10 grid gap-8 sm:grid-cols-2 sm:items-start">
           <div>
-            <h2 className="mb-2 text-sm font-semibold text-neutral-900">Comparte este codigo</h2>
+            <h2 className="mb-2 text-sm font-semibold text-neutral-900">Comparte este código</h2>
             <p className="mb-4 text-sm text-neutral-500">
-              Muestralo a un cliente nuevo. Cuando complete la compra, el promotor registra la
-              conversion desde su panel de ESCALA y el pago en USDC se libera on-chain.
+              Muéstralo a un cliente nuevo. Cuando complete la compra, el promotor registra la
+              conversión desde su panel de ESCALA y el pago en USDC se libera on-chain.
             </p>
             {shareUrl && <QrShare url={shareUrl} />}
           </div>
@@ -135,7 +135,7 @@ export default function PublicCampaignPage({
               </p>
             </div>
             <Link href="/dashboard" className="inline-block text-neutral-500 underline">
-              Eres el promotor? entra a tu panel
+              ¿Eres el promotor? Entra a tu panel
             </Link>
           </div>
         </div>

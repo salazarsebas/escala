@@ -32,8 +32,8 @@ export default function NewCampaignPage() {
 
   return (
     <DashboardShell
-      title="Nueva campana"
-      subtitle="El presupuesto se deposita en un escrow de Trustless Work en Stellar. Se libera en USDC al promotor solo cuando tu apruebes la conversion."
+      title="Nueva campaña"
+      subtitle="El presupuesto se deposita en un escrow de Trustless Work en Stellar. Se libera en USDC al promotor solo cuando tu apruebes la conversión."
     >
       <div className="mx-auto max-w-xl">
         <Link

@@ -17,10 +17,10 @@ import { STELLAR_NETWORK, USDC_ASSET, fundWithFriendbot } from "@/lib/stellar";
 
 // ESCALA's on-chain unit of work: one campaign == one Trustless Work
 // single-release escrow with exactly one milestone ("a verified
-// conversion"). The business is the approver / release signer / platform
+// conversión"). The business is the approver / release signer / platform
 // admin; the promoter they recruited is the receiver / service provider.
 // This mirrors the MVP scope in the project brief: one campaign, one
-// promoter, one conversion cycle, fully verifiable on Stellar testnet.
+// promoter, one conversión cycle, fully verifiable on Stellar testnet.
 
 export const CONVERSION_MILESTONE_INDEX = "0";
 
@@ -55,7 +55,7 @@ export function useEscrowActions() {
 
   const requireUnsignedXdr = (result: EscrowRequestResponse) => {
     if (!result.unsignedTransaction) {
-      throw new Error("Trustless Work no devolvio una transaccion para firmar.");
+      throw new Error("Trustless Work no devolvió una transacción para firmar.");
     }
     return result.unsignedTransaction;
   };
@@ -126,7 +126,7 @@ export function useEscrowActions() {
           disputeResolver: businessAddress,
           receiver: promoterAddress,
         },
-        milestones: [{ description: "Conversion de cliente verificada" }],
+        milestones: [{ description: "Conversión de cliente verificada" }],
         trustline: { address: USDC_ASSET.issuer, symbol: USDC_ASSET.code },
       };
 
@@ -147,7 +147,7 @@ export function useEscrowActions() {
     [deployEscrow, ensureDeployedAndUsdcTrustline, fundEscrow, signAndSend]
   );
 
-  /** Step 2: the promoter marks a real-world conversion as delivered. */
+  /** Step 2: the promoter marks a real-world conversión as delivered. */
   const submitConversion = useCallback(
     async (contractId: string, promoterAddress: string, evidence: string) => {
       await ensureDeployedAndUsdcTrustline();

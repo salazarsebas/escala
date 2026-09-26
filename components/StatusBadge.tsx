@@ -10,8 +10,8 @@ const TONE_STYLES: Record<Tone, string> = {
 };
 
 const TONE_LABELS: Record<Tone, string> = {
-  pending: "Esperando conversion",
-  submitted: "Conversion registrada",
+  pending: "Esperando conversión",
+  submitted: "Conversión registrada",
   released: "Recompensa pagada",
   disputed: "En disputa",
 };

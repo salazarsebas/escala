@@ -66,8 +66,8 @@ export default function DashboardPage() {
         <ThemeToggle className="absolute right-6 top-6" />
         <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Entra a tu panel de ESCALA</h1>
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          Conecta con Google para crear campanas como negocio o registrar conversiones como
-          promotor. Tu wallet en Stellar se crea automaticamente.
+          Conecta con Google para crear campañas como negocio o registrar conversiones como
+          promotor. Tu wallet en Stellar se crea automáticamente.
         </p>
         <ConnectButton />
       </div>
@@ -77,19 +77,19 @@ export default function DashboardPage() {
   return (
     <DashboardShell
       title="Tu panel"
-      subtitle="Gestiona campanas y conversiones en Stellar."
+      subtitle="Gestiona campañas y conversiones en Stellar."
       actions={
         <Link
           href="/dashboard/nueva"
           className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-4 py-2 text-xs font-semibold text-neutral-900 transition hover:bg-amber-300"
         >
           <Plus size={14} />
-          Nueva campana
+          Nueva campaña
         </Link>
       }
     >
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatTile label="Campanas" value={stats.campaigns} icon={<Megaphone size={16} />} />
+        <StatTile label="Campañas" value={stats.campaigns} icon={<Megaphone size={16} />} />
         <StatTile
           label="Conversiones validadas"
           value={stats.validated}
@@ -113,22 +113,22 @@ export default function DashboardPage() {
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Financial Activity Passport</h3>
             <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300">
-              Proximamente
+              Próximamente
             </span>
           </div>
           <p className="mt-1 text-xs text-neutral-500">
-            Cada campana, conversion y pago que generas aqui queda registrado on-chain. La
+            Cada campaña, conversión y pago que generas aquí queda registrado on-chain. La
             siguiente fase convierte ese historial en un pasaporte de actividad financiera
             verificable, para que tu negocio pueda usarlo como evidencia frente a futuras
-            evaluaciones de credito.
+            evaluaciones de crédito.
           </p>
         </div>
       </div>
 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm dark:border-neutral-800 dark:bg-neutral-900">
         <p className="text-neutral-600 dark:text-neutral-400">
-          Tu wallet se fondea sola con XLM de prueba la primera vez que crees una campana o
-          registres una conversion.
+          Tu wallet se fondea sola con XLM de prueba la primera vez que crees una campaña o
+          registres una conversión.
         </p>
         <a
           href={circleUsdcFaucetUrl(address)}
@@ -142,12 +142,12 @@ export default function DashboardPage() {
       </div>
 
       <section className="mb-12">
-        <h2 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">Mis campanas (negocio)</h2>
+        <h2 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">Mis campañas (negocio)</h2>
 
         {asBusiness.isLoading && <p className="text-sm text-neutral-500">Cargando...</p>}
         {asBusiness.data && asBusiness.data.length === 0 && (
           <p className="rounded-2xl border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500 dark:border-neutral-800">
-            Aun no creaste ninguna campana. Crea la primera y deposita el presupuesto en USDC.
+            Aún no creaste ninguna campaña. Crea la primera y deposita el presupuesto en USDC.
           </p>
         )}
         <div className="space-y-4">
@@ -165,7 +165,7 @@ export default function DashboardPage() {
       <section>
         <h2 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">Mis promociones (promotor)</h2>
         <p className="mb-4 text-sm text-neutral-500">
-          Tu direccion para que un negocio te agregue a una campana:{" "}
+          Tu dirección para que un negocio te agregue a una campaña:{" "}
           <span className="rounded bg-neutral-200 px-2 py-0.5 font-mono text-xs text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
             {address}
           </span>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
         {asPromoter.isLoading && <p className="text-sm text-neutral-500">Cargando...</p>}
         {asPromoter.data && asPromoter.data.length === 0 && (
           <p className="rounded-2xl border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500 dark:border-neutral-800">
-            Todavia ningun negocio te agrego como promotor. Comparte tu direccion de arriba.
+            Todavía ningún negocio te agregó como promotor. Comparte tu dirección de arriba.
           </p>
         )}
         <div className="space-y-4">

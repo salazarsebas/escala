@@ -52,7 +52,7 @@ export function DashboardShell({
             className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-neutral-500 transition hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
           >
             <LogOut size={12} />
-            Cerrar sesion
+            Cerrar sesión
           </button>
         </div>
       </aside>
@@ -75,7 +75,7 @@ export function DashboardShell({
                 <button
                   onClick={logout}
                   className="rounded-full border border-neutral-200 p-1.5 text-neutral-500 transition hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
-                  aria-label="Cerrar sesion"
+                  aria-label="Cerrar sesión"
                 >
                   <LogOut size={14} />
                 </button>

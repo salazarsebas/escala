@@ -93,7 +93,7 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
           <input
             value={evidence}
             onChange={(e) => setEvidence(e.target.value)}
-            placeholder="Evidencia (ej. numero de boleta, foto, referencia)"
+            placeholder="Evidencia (ej. número de boleta, foto, referencia)"
             className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:placeholder:text-neutral-600"
           />
           <button
@@ -102,7 +102,7 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
             className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-neutral-700 disabled:opacity-50 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
           >
             {busy && <Loader2 size={14} className="animate-spin" />}
-            Registrar conversion
+            Registrar conversión
           </button>
         </div>
       )}
@@ -127,7 +127,7 @@ export function CampaignCard({ campaign, viewerRole, onChanged }: Props) {
             href={`/c/${contractId}`}
             className="text-neutral-500 underline hover:text-neutral-900 dark:hover:text-neutral-300"
           >
-            Ver pagina publica
+            Ver página pública
           </Link>
           <a
             href={explorerContractUrl(contractId)}

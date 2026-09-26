@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 
 const STEPS = [
   "Verificando trustline de USDC...",
-  "Desplegando el contrato de la campana...",
+  "Desplegando el contrato de la campaña...",
   "Depositando el presupuesto en el escrow...",
   "Listo, redirigiendo...",
 ];
@@ -60,26 +60,26 @@ export function CampaignForm() {
     >
       <div>
         <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Nombre de la campana
+          Nombre de la campaña
         </label>
         <input
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Ej. Cafeteria Maria - clientes nuevos"
+          placeholder="Ej. Cafetería María - clientes nuevos"
           className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:placeholder:text-neutral-600"
         />
       </div>
 
       <div>
         <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Descripcion / condicion de la recompensa
+          Descripción / condición de la recompensa
         </label>
         <textarea
           required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Ej. Se paga cuando un cliente nuevo muestra el codigo y compra en tienda."
+          placeholder="Ej. Se paga cuando un cliente nuevo muestra el código y compra en tienda."
           rows={3}
           className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:placeholder:text-neutral-600"
         />
@@ -87,7 +87,7 @@ export function CampaignForm() {
 
       <div>
         <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Recompensa por conversion (USDC)
+          Recompensa por conversión (USDC)
         </label>
         <input
           required
@@ -100,13 +100,13 @@ export function CampaignForm() {
         />
         <p className="mt-1 text-xs text-neutral-500">
           Este monto se deposita ahora mismo en el escrow y se libera cuando apruebes la
-          conversion.
+          conversión.
         </p>
       </div>
 
       <div>
         <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Direccion Stellar del promotor
+          Dirección Stellar del promotor
         </label>
         <input
           required
@@ -116,7 +116,7 @@ export function CampaignForm() {
           className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 font-mono text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:placeholder:text-neutral-600"
         />
         <p className="mt-1 text-xs text-neutral-500">
-          Pidele a tu promotor que entre a ESCALA y copie su direccion desde su panel.
+          Pídele a tu promotor que entre a ESCALA y copie su dirección desde su panel.
         </p>
       </div>
 
@@ -136,7 +136,7 @@ export function CampaignForm() {
         disabled={submitting}
         className="w-full rounded-full bg-amber-400 px-5 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-amber-300 disabled:opacity-50"
       >
-        {submitting ? "Creando campana..." : "Depositar presupuesto y crear campana"}
+        {submitting ? "Creando campaña..." : "Depositar presupuesto y crear campaña"}
       </button>
     </form>
   );
