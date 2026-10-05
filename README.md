@@ -1,5 +1,6 @@
 # ESCALA
 
+
 **Turn your sales into growth.** On-chain performance marketing for micro
 businesses, built on Stellar.
 
